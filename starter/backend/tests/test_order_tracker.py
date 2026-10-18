@@ -32,13 +32,23 @@ def order_tracker(mock_storage):
 
 def test_add_order_successfully(order_tracker, mock_storage):
     """Tests adding a new order with default 'pending' status."""
-    order_tracker.add_order("ORD001", "Laptop", 1, "CUST001")
+    returned = order_tracker.add_order("ORD001", "Laptop", 1, "CUST001")
 
-    # We expect save_order to be called once
+    expected = {
+        "order_id": "ORD001",
+        "item_name": "Laptop",
+        "quantity": 1,
+        "customer_id": "CUST001",
+        "status": "pending",
+    }
+
+    # We expect save_order to be called once, with every field stored correctly
     mock_storage.save_order.assert_called_once()
     order_id, order = mock_storage.save_order.call_args[0]
     assert order_id == "ORD001"
-    assert order["status"] == "pending"
+    assert order == expected
+    # The returned order matches what was saved
+    assert returned == expected
 
 
 def test_add_order_raises_error_if_exists(order_tracker, mock_storage):

@@ -44,6 +44,13 @@ docker compose up --build      # http://127.0.0.1:5000/
 
 The container runs Flask's development server (debug on, bound to `0.0.0.0`), and `backend/` and `frontend/` are mounted so edits reload automatically. It is meant for local use, not production. Orders are stored in memory and are lost when the server restarts.
 
+## Reflection
+
+- I used 409 for a duplicate order ID and 400 for bad input. With a duplicate, the request is fine, it just clashes with an order that already exists, so 409 made more sense to me.
+- I validate before touching storage so a bad request can't leave a half-saved order behind.
+- Mocking the storage made the OrderTracker tests easy to write. I also made the add_order test check every field, since checking only the status could miss a typo in the order dict.
+- Next I'd move to a real database. OrderTracker only calls the storage methods, so the logic should barely change, but I'd have to think about errors and two people writing at once.
+
 ## API Reference
 
 All endpoints are under `/api/orders` and exchange JSON. Valid statuses are `pending`, `processing` and `shipped`.
