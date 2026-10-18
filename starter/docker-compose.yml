@@ -1,0 +1,9 @@
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    # Mount the source so edits reload the Flask dev server without rebuilding.
+    volumes:
+      - ./backend:/app/backend
+      - ./frontend:/app/frontend
